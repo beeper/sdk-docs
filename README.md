@@ -72,6 +72,8 @@ Before being able to access data from the chat room, you'll need to request perm
 
 That's it! A widget really is just an embedded webpage that can interact with data from the chat room, so just like with regular websites, you have complete freedom on what you want to build. 
 
+[//]: # (Maybe add something about "use client" being needed in NextJS. Or a Troubleshooting section. Assuming I haven't already fixed the "use client" thing)
+
 ### Ship
 
 Once you've made a widget, you can easily get it up and running on [Vercel](https://vercel.com/), the creator of NextJS, so you'll have a URL you can share with others so that they can install it to their Beeper accounts. 
@@ -87,6 +89,126 @@ Summarizer: a  widget that finds the last message you read and then fetches and 
 "Do It": a widget that's like a universal smart button. You press it and it guesses what you need based on the conversation. https://github.com/beeper/widget-do-it
 
 ## API Documentation
+
+The code from the example widget will have already set up the fundamentals, so most of the API-related code you'll write will be based on
+
+`useWidgetApi` from `@beeper/matrix-widget-toolkit-react`.
+
+You'll create an instance of a `WidgetApi` by calling `useWidgetApi()`, and can then call various methods on it.
+
+[//]: # (TODO: describe room events vs state events, tell which one to use for what things, etc. like how state events have one single value)
+
+Background info on Matrix:
+- Matrix is 
+- Room Events are
+- State Events are
+- Room Account Data is
+- Account Data is
+
+### Capabilities
+
+### Types
+
+`RoomEvent`: import { RoomEvent } from "@beeper/matrix-widget-toolkit-api";
+
+`RoomAccountData`: import { RoomAccountData } from "@beeper/matrix-widget-toolkit-api";
+
+`StateEvent`: import { StateEvent } from "@beeper/matrix-widget-toolkit-api"
+
+### Methods
+
+For the following, we'll use:
+
+```javascript
+import { useWidgetApi } from "@beeper/matrix-widget-toolkit-react";
+
+// Inside of a React component
+const widgetApi = useWidgetApi();
+```
+
+widgetApi methods return promises, so they should be called using either async/await or .then().
+
+For example:
+
+```javascript
+export default function Home() {
+
+    const [message, setMessage] = useState("")
+    const widgetApi = useWidgetApi()
+    
+    async function fetchData(event: any) {
+        event.preventDefault();
+        setMessage("");
+
+        await widgetApi.sendRoomEvent('m.room.message', {
+            msgtype: 'm.text',
+            body: message,
+        });
+    }
+    
+    return (
+        <form onSubmit={fetchData}>
+            <input value={message} onChange={(event) => setMessage(event.target.value)} />
+        </form>
+    );
+}
+```
+
+#### Receiving Room Events
+
+```javascript
+const events: RoomEvent<any>[] = await widgetApi.receiveRoomEvents(eventType, {
+    messageType?: string;
+    limit?: number;
+    roomIds?: string[] | Symbols.AnyRoom;
+    since?: string | undefined;
+});
+```
+
+eventType (string): the "m.type" key in the JSON representing the event you want to get. 
+- messages: "m.room.message"
+- reaction: "m.reaction"
+
+since (string) optional: a string representing an eventId of an event in a room. When provided, the method will return only events after the "since" eventId. For example, if you pass in the eventId of the last read message by fetching it from Room Account Data, you can fetch only the user's unread messages.
+
+#### Sending Room Events
+
+```javascript
+await widgetApi.sendRoomEvent(eventType, content, {
+    roomId?: string
+});
+```
+
+roomId (string): include if you want to send an event in another room. Not needed if you want to send an event in the current room.
+
+[//]: # (TODO: elaborate)
+content: content specific to your command. For example, if eventType = "m.room.redaction":
+```javascript
+{
+    redacts: eventId // eventId is string
+}
+```
+
+
+#### Receiving State Events
+
+```javascript
+const events: StateEvent<any>[]: await widgetApi.receiveStateEvents(eventType, {
+    stateKey?: string;
+    roomIds?: string[] | Symbols.AnyRoom;
+});
+```
+
+eventType
+
+roomIds
+
+#### Receiving Room Account Data
+
+#### Setting Room Account Data?
+
+[//]: # (TODO: check if implemented. probably not)
+
 
 ## Credits
 
