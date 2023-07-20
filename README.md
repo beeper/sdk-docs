@@ -6,12 +6,11 @@ This repo will contain instructions for various SDKs that can be used with Beepe
 Widgets are webpages that live on the sidebar of Beeper. They can access data from a chat in Beeper, such as messages and a list of users. They can also take actions, such as sending messages on the user's behalf.
 
 [//]: # (TODO: make this better. widgets are unique and mostly unprecedented in major chat networks; now people can have them in any)
+[//]: # (TODO: maybe have a section specifically on installing widgets? and then in "get started" i link how to install? so people can show their friends? or maybe not since the focus is on the developer)
 
 ## Get started in 5 minutes
 
 We'll set you up with a [NextJS](https://nextjs.org/) project that will provide a foundational codebase you can then build upon.
-
-[//]: # (TODO: add a part about toggling the feature in labs. make sure that it's also in the section on installing widgets, or maybe i just put it once overall?)
 
 #### Install Node
 
@@ -34,6 +33,16 @@ This will prompt you "Ok to proceed? (y)". Type in y.
 It will then ask for your project name. This will be the name of the project's folder on your computer.
 
 Wait for packages to install. Then, type in your terminal, `cd` (the name of your project), and after that, `yarn dev`.
+
+#### Enable widgets
+
+Click the settings gear towards the top-left of Beeper, then press "Settings" in the pop-up:
+
+<img alt="settings.png" src="./media/settings.png" width="500"/>
+
+Click "Labs" in the sidebar. Enable "Show widgets in chat view" and **disable "Chat Caching"**. There's currently an issue that happens when both are enabled.
+
+<img alt="labs.png" src="./media/labs.png" width="500"/>
 
 #### Install the widget
 
