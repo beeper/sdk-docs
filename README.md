@@ -1,9 +1,6 @@
-# Beeper SDKs
-This repo will contain instructions for various SDKs that can be used with Beeper.
-
 # Widgets
 
-Widgets are webpages that live on the sidebar of Beeper. They can access data from a chat in Beeper, such as messages and a list of users. They can also take actions, such as sending messages on the user's behalf.
+Widgets are webpages that live in the sidebar of Beeper. They can access data from a chat in Beeper, such as messages and a list of users. They can also take actions, such as sending messages on the user's behalf.
 
 [//]: # (TODO: make this better. widgets are unique and mostly unprecedented in major chat networks; now people can have them in any)
 [//]: # (TODO: maybe have a section specifically on installing widgets? and then in "get started" i link how to install? so people can show their friends? or maybe not since the focus is on the developer)
@@ -12,7 +9,7 @@ Widgets are webpages that live on the sidebar of Beeper. They can access data fr
 
 We'll set you up with a [NextJS](https://nextjs.org/) project that will provide a foundational codebase you can then build upon.
 
-#### Install Node
+### Install Node
 
 If you haven't already, install the latest LTS or Current version of Node.js. It is recommended to also install `yarn` as well:
 
@@ -20,7 +17,7 @@ If you haven't already, install the latest LTS or Current version of Node.js. It
 npm install --global yarn
 ```
 
-#### Clone the repo
+### Clone the repo
 
 Type the following in your terminal:
 
@@ -34,7 +31,7 @@ It will then ask for your project name. This will be the name of the project's f
 
 Wait for packages to install. Then, type in your terminal, `cd` (the name of your project), and after that, `yarn dev`.
 
-#### Enable widgets
+### Enable widgets
 
 Click the settings gear towards the top-left of Beeper, then press "Settings" in the pop-up:
 
@@ -44,7 +41,7 @@ Click "Labs" in the sidebar. Enable "Show widgets in chat view" and **disable "C
 
 <img alt="labs.png" src="./media/labs.png" width="500"/>
 
-#### Install the widget
+### Install the widget
 
 [//]: # (TODO: ADD LABS INSTRUCTIONS + RECENT CHAT CACHING DISABLE)
 
@@ -100,9 +97,9 @@ Summarizer: a  widget that finds the last message you read and then fetches and 
 
 "Do It": a widget that's like a universal smart button. You press it and it guesses what you need based on the conversation. https://github.com/beeper/widget-do-it
 
-## API Documentation
+# API Documentation
 
-### Background Info on Matrix
+## Background Info on Matrix
 
 Matrix, the chat protocol, consists of "events". Events represent data inside a chat, which Matrix calls a "room". Events are split into two types: room events and state events.
 
@@ -110,7 +107,7 @@ In Beeper, the list of chat messages is called a "timeline". Room events represe
 
 Room account data is JSON data stored inside of each Beeper account, inaccessible by other users. Inside of room account data, Beeper stores the indicator of which message has been last read, and whether the chat has been marked "done", and whether it has been marked "unread".
 
-### Widget API Info
+## Widget API Info
 
 The code from the example widget will have already set up the fundamentals, so most of the API-related code you'll write will be based on `useWidgetApi` from `@beeper/matrix-widget-toolkit-react`.
 
@@ -158,7 +155,7 @@ export default function Home() {
 }
 ```
 
-#### Types Info (for TypeScript)
+### Types Info (for TypeScript)
 
 `RoomEvent`: `import { RoomEvent } from "@beeper/matrix-widget-toolkit-api";`
 
@@ -203,9 +200,9 @@ RoomAccountData<T>:
 }
 ```
 
-### Room Events
+## Room Events
 
-#### Receiving
+### Receiving
 
 ```javascript
 const events: RoomEvent<any>[] = await widgetApi.receiveRoomEvents(eventType, {
@@ -285,7 +282,7 @@ m.reaction:
 
 `since` (string) is an optional parameter to fetch only messages after a certain message. Pass in the message's eventId as a string. For example, to get only unread messages, get `m.fully_read` from room account data, then set that as the `since` parameter.
 
-#### Sending
+### Sending
 
 ```javascript
 const events: RoomEvent<any>[] = await widgetApi.receiveRoomEvents(eventType, {
@@ -332,9 +329,9 @@ WidgetEventCapability.forRoomEvent(
     'm.room.redaction' // replace with the eventType you're using
 )
 ```
-### State Events
+## State Events
 
-#### Receiving
+### Receiving
 
 ```javascript
 const events: StateEvent<any>[] = await widgetApi.receiveStateEvents(eventType, {
@@ -352,7 +349,7 @@ stateKey: to get the value of something (for example, the room name) at a certai
 
 roomIds: an array of other rooms to get state events from. Don't need to specify roomIds if you're just looking for the current room. Symbols.AnyRoom (to get the state event from all of the user's rooms) is "*".
 
-#### Sending
+### Sending
 
 This is most useful if you're in a Matrix chat (eg. if you're in a Beeper-Beeper chat room). If you're using Beeper to chat on another network, your changes might not show there (for example, changing a room name in a WhatsApp chat using a Widget doesn't change it in WhatsApp, but rather only inside your Beeper client). 
 
@@ -363,7 +360,7 @@ await widgetApi.sendStateEvent(eventType, content, {
 });
 ```
 
-### Room Account Data
+## Room Account Data
 
 The primary use for room account data when developing widgets is probably getting the `m.fully_read` indicator. This is a string representing the most recent message that the user has seen. 
 
@@ -392,6 +389,6 @@ WidgetEventCapability.forRoomAccountData(
 )
 ```
 
-## Credits
+# Credits
 
 Thanks to [Nordeck](https://github.com/nordeck) for their wonderful library [matrix-widget-toolkit](https://github.com/nordeck/matrix-widget-toolkit). Beeper widgets are built on their library, plus some additional modifications for extra functionality.
