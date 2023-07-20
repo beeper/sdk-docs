@@ -11,6 +11,7 @@ Widgets are webpages that live on the sidebar of Beeper. They can access data fr
 
 We'll set you up with a [NextJS](https://nextjs.org/) project that will provide a foundational codebase you can then build upon.
 
+[//]: # (TODO: add a part about toggling the feature in labs. make sure that it's also in the section on installing widgets, or maybe i just put it once overall?)
 
 #### Install Node
 
@@ -35,6 +36,8 @@ It will then ask for your project name. This will be the name of the project's f
 Wait for packages to install. Then, type in your terminal, `cd` (the name of your project), and after that, `yarn dev`.
 
 #### Install the widget
+
+[//]: # (TODO: ADD LABS INSTRUCTIONS + RECENT CHAT CACHING DISABLE)
 
 In Beeper, press the "Start New Chat" button:
 
@@ -90,47 +93,39 @@ Summarizer: a  widget that finds the last message you read and then fetches and 
 
 ## API Documentation
 
-The code from the example widget will have already set up the fundamentals, so most of the API-related code you'll write will be based on
+### Background Info on Matrix
 
-`useWidgetApi` from `@beeper/matrix-widget-toolkit-react`.
+Matrix, the chat protocol, consists of "events". Events represent data inside a chat, which Matrix calls a "room". Events are split into two types: room events and state events.
+
+In Beeper, the list of chat messages is called a "timeline". Room events represent events inside of that timeline, that happen one after another. For example, messages being sent, messages being deleted, or reactions being applied. State events represent the current state of a room, for example, the title and the list of participants. State events have a singular current value.
+
+Room account data is JSON data stored inside of each Beeper account, inaccessible by other users. Inside of room account data, Beeper stores the indicator of which message has been last read, and whether the chat has been marked "done", and whether it has been marked "unread".
+
+### Widget API Info
+
+The code from the example widget will have already set up the fundamentals, so most of the API-related code you'll write will be based on `useWidgetApi` from `@beeper/matrix-widget-toolkit-react`.
 
 You'll create an instance of a `WidgetApi` by calling `useWidgetApi()`, and can then call various methods on it.
 
-[//]: # (TODO: describe room events vs state events, tell which one to use for what things, etc. like how state events have one single value)
+Methods called on a WidgetApi instance return promises, so they should be called using either async/await or .then().
 
-Background info on Matrix:
-- Matrix is 
-- Room Events are
-- State Events are
-- Room Account Data is
-- Account Data is
 
-### Capabilities
-
-### Types
-
-`RoomEvent`: import { RoomEvent } from "@beeper/matrix-widget-toolkit-api";
-
-`RoomAccountData`: import { RoomAccountData } from "@beeper/matrix-widget-toolkit-api";
-
-`StateEvent`: import { StateEvent } from "@beeper/matrix-widget-toolkit-api"
-
-### Methods
-
-For the following, we'll use:
-
+In code, it looks like this:
 ```javascript
 import { useWidgetApi } from "@beeper/matrix-widget-toolkit-react";
 
-// Inside of a React component
+// Use inside of a React component
 const widgetApi = useWidgetApi();
 ```
 
-widgetApi methods return promises, so they should be called using either async/await or .then().
 
 For example:
 
 ```javascript
+import { useWidgetApi } from "@beeper/matrix-widget-toolkit-react";
+import { useEffect, useState } from "react";
+import { RoomEvent } from "@beeper/matrix-widget-toolkit-api";
+
 export default function Home() {
 
     const [message, setMessage] = useState("")
@@ -154,7 +149,54 @@ export default function Home() {
 }
 ```
 
-#### Receiving Room Events
+#### Types Info (for TypeScript)
+
+`RoomEvent`: `import { RoomEvent } from "@beeper/matrix-widget-toolkit-api";`
+
+```javascript
+RoomEvent<T>:
+
+{
+    type: string;
+    sender: string;
+    event_id: string;
+    room_id: string;
+    origin_server_ts: number;
+    content: <T>;
+}
+```
+
+`StateEvent`: `import { StateEvent } from "@beeper/matrix-widget-toolkit-api"`
+
+```javascript
+StateEvent<T>:
+
+{
+    type: string;
+    sender: string;
+    event_id: string;
+    room_id: string;
+    origin_server_ts: number;
+    state_key: string;
+    content: T;
+}
+```
+
+`RoomAccountData`: `import { RoomAccountData } from "@beeper/matrix-widget-toolkit-api";`
+
+```javascript
+RoomAccountData<T>:
+
+{
+    type: string;
+    room_id: string;
+    content: T;
+}
+```
+
+### Room Events
+
+#### Receiving
 
 ```javascript
 const events: RoomEvent<any>[] = await widgetApi.receiveRoomEvents(eventType, {
@@ -165,50 +207,181 @@ const events: RoomEvent<any>[] = await widgetApi.receiveRoomEvents(eventType, {
 });
 ```
 
-eventType (string): the "m.type" key in the JSON representing the event you want to get. 
+eventType (string): the "m.type" key in the JSON representing the event you want to get. Each room event inside of a Matrix client has its own "m.type" key. Examples:
+
 - messages: "m.room.message"
 - reaction: "m.reaction"
+- roomIds: array of ids of other rooms to get events in. Symbols.AnyRoom is "*"
 
-since (string) optional: a string representing an eventId of an event in a room. When provided, the method will return only events after the "since" eventId. For example, if you pass in the eventId of the last read message by fetching it from Room Account Data, you can fetch only the user's unread messages.
+Request permissions for the "eventType", like so:
+```javascript
+WidgetEventCapability.forRoomEvent(
+    EventDirection.Receive,
+    'm.room.message' // replace with the eventType you requested
+),
+```
 
-#### Sending Room Events
+Response format:
+```json
+[
+    {
+        "content": {
+            ...
+        },
+        "origin_server_ts": 1689883910958,
+        "room_id": "!jqIPEzQnHoxVKgBgVM:beeper.com",
+        "sender": "@griffin:beeper.com",
+        "type": "m.reaction",
+        "unsigned": {
+            "age": 1228375,
+            "transaction_id": "m1689883910662.65",
+            "com.beeper.hs.order": 720911906
+        },
+        "event_id": "$jbXMaSmOJvgJa7oFaMjlr8RxHIc39hnfnDxqnCiaTd4",
+        "user_id": "@griffin:beeper.com",
+        "age": 1228375
+    }
+]
+```
+
+`content` varies depending on the `eventType`. Examples:
+
+m.room.message:
+```json
+"content": {
+    "msgtype": "m.text",
+    "body": "hello there",
+    "com.beeper.linkpreviews": [],
+    "com.beeper.origin_client_type": "desktop",
+    "_isEmojiBody": null,
+    "com.beeper.origin_client_ts": 1689883904990,
+    "com.beeper.origin_client_version": "3.66.1"
+},
+```
+
+m.reaction:
+```json
+"content": {
+    "com.beeper.origin_client_ts": 1689883910662,
+    "com.beeper.origin_client_type": "desktop",
+    "com.beeper.origin_client_version": "3.66.1",
+    "com.beeper.reaction.shortcode": ":heart:",
+    "m.relates_to": {
+        "event_id": "$ul_WqBU0XMWTyS773XAZtX2KPRjRVyt6ba4xhxDmf7A",
+        "key": "❤️",
+        "rel_type": "m.annotation"
+    }
+},
+```
+
+`since` (string) is an optional parameter to fetch only messages after a certain message. Pass in the message's eventId as a string. For example, to get only unread messages, get `m.fully_read` from room account data, then set that as the `since` parameter.
+
+#### Sending
 
 ```javascript
-await widgetApi.sendRoomEvent(eventType, content, {
-    roomId?: string
+const events: RoomEvent<any>[] = await widgetApi.receiveRoomEvents(eventType, {
+    messageType?: string;
+    limit?: number;
+    roomIds?: string[] | Symbols.AnyRoom;
+    since?: string | undefined;
+});
+
+await widgetApi.sendRoomEvent(eventType: string, content: {
+  ...  
 });
 ```
 
-roomId (string): include if you want to send an event in another room. Not needed if you want to send an event in the current room.
+`content` varies depending on the eventType. For example:
+
+```javascript
+await widgetApi.sendRoomEvent('m.room.message', {
+    msgtype: 'm.text',
+    body: "Hello everyone!",
+});
+```
+
+```javascript
+await widgetApi.sendRoomEvent('m.room.redaction', {
+    redacts: "$ul_WqBU0XMWTyS773XAZtX2KPRjRVyt6ba4xhxDmf7A" // this is the eventId
+});
+```
+
+To send an event in another room, specify the roomId in `roomIds[]`. Not needed if you want to send an event in the currently-viewed room.
 
 [//]: # (TODO: elaborate)
-content: content specific to your command. For example, if eventType = "m.room.redaction":
+content: content specific to your command. For example, if `eventType` = `"m.room.redaction"`:
 ```javascript
 {
     redacts: eventId // eventId is string
 }
 ```
 
+As usual, you'll need to request permissions:
+```javascript
+WidgetEventCapability.forRoomEvent(
+    EventDirection.Send,
+    'm.room.redaction' // replace with the eventType you're using
+)
+```
+### State Events
 
-#### Receiving State Events
+#### Receiving
 
 ```javascript
-const events: StateEvent<any>[]: await widgetApi.receiveStateEvents(eventType, {
-    stateKey?: string;
-    roomIds?: string[] | Symbols.AnyRoom;
+const events: StateEvent<any>[] = await widgetApi.receiveStateEvents(eventType, {
+    stateKey, // Optional: string
+    roomIds, // Optional: string[] | Symbols.AnyRoom
 });
 ```
 
-eventType
+eventType (string): the "m.type" key of the JSON representing the state event you want. Each state event inside of a Matrix client has its own "m.type". Examples:
 
-roomIds
+- room members: "m.room.member"
+- room name: "m.room.name"
 
-#### Receiving Room Account Data
+stateKey: to get the value of something (for example, the room name) at a certain point in time, provide the stateKey (as a string) corresponding to the state event. For example, if someone changed the room name but you'd like the previous one, provide the previous state key.
 
-#### Setting Room Account Data?
+roomIds: an array of other rooms to get state events from. Don't need to specify roomIds if you're just looking for the current room. Symbols.AnyRoom (to get the state event from all of the user's rooms) is "*".
 
-[//]: # (TODO: check if implemented. probably not)
+#### Sending
 
+This is most useful if you're in a Matrix chat (eg. if you're in a Beeper-Beeper chat room). If you're using Beeper to chat on another network, your changes might not show there (for example, changing a room name in a WhatsApp chat using a Widget doesn't change it in WhatsApp, but rather only inside your Beeper client). 
+
+```javascript
+await widgetApi.sendStateEvent(eventType, content, {
+    stateKey, // Optional: string
+    roomId, // Optional: string
+});
+```
+
+### Room Account Data
+
+The primary use for room account data when developing widgets is probably getting the `m.fully_read` indicator. This is a string representing the most recent message that the user has seen. 
+
+Room account data can currently only be read from; you can't write to it.
+
+```javascript
+const data = await widgetApi.receiveRoomAccountData(eventType, {
+    roomIds // Optional: string[] | Symbols.AnyRoom;
+});
+```
+
+For example, to get only unread messages:
+
+```javascript
+const fullyReadData: RoomAccountData<any>[] = await widgetApi.receiveRoomAccountData('m.fully_read');
+const fullyRead: string | undefined = fullyReadData[0].content.event_id;
+roomEvents = await widgetApi.receiveRoomEvents('m.room.message', {limit: limit, since: fullyRead});
+```
+
+Permissions:
+
+```javascript
+WidgetEventCapability.forRoomAccountData(
+    EventDirection.Receive,
+    'm.fully_read' // Replace with the eventType you're using
+)
+```
 
 ## Credits
 
