@@ -97,6 +97,8 @@ Summarizer: a widget that finds the last message you read and then fetches and s
 
 "Do It": a widget that's like a universal smart button. You press it and it guesses what you need based on the conversation. Try it out at https://do-it.beeper.vercel.app, and view the code at https://github.com/beeper/widget-do-it
 
+(Note: when developing a widget, use the `widget-example` repo as your base code. The code in the other examples may not be up to date.)
+
 # API Documentation
 
 ## Background Info on Matrix
