@@ -85,27 +85,27 @@ That's it! A widget really is just an embedded webpage that can interact with da
 
 ### Ship
 
-Once you've made a widget, you can easily get it up and running on [Vercel](https://vercel.com/), the creator of NextJS, so you'll have a URL you can share with others so that they can install it to their Beeper accounts. 
+Once you've made a widget, you can easily make it accessible to others who would want to use it by deploying it on [Vercel](https://vercel.com/). They'll give you a URL you can share with others so that they can install it to their Beeper accounts. 
 
-Just push your code to a GitHub repo, then create an account on [vercel.com](https://vercel.com/). You'll see a screen that lets you import a Git repository. Select the one you just created, and Vercel will build and deploy your widget! It'll generate a URL that others can access it on (and you can change it to a different URL or put it on a custom domain), and every time you push to GitHub, the newest version of your widget will automatically be shown to all users.
+To do so, just push your code to a GitHub repo, then create an account on [vercel.com](https://vercel.com/). You'll be prompted to import a Git repository. Select the one you just created, and Vercel will build and deploy your widget! You can customize the URL as well, or deploy it on your own domain. Every time you push to GitHub, the newest version of your widget will automatically be shown to all users.
 
 ## Examples
 
 The example repo you just cloned: https://github.com/beeper/widget-example
 
-Summarizer: a  widget that finds the last message you read and then fetches and summarizes your unread messages. https://github.com/beeper/widget-summarizer
+Summarizer: a widget that finds the last message you read and then fetches and summarizes your unread messages. Try it out at https://summarizer.beeper.vercel.app, and view the code at https://github.com/beeper/widget-summarizer
 
-"Do It": a widget that's like a universal smart button. You press it and it guesses what you need based on the conversation. https://github.com/beeper/widget-do-it
+"Do It": a widget that's like a universal smart button. You press it and it guesses what you need based on the conversation. Try it out at https://do-it.beeper.vercel.app, and view the code at https://github.com/beeper/widget-do-it
 
 # API Documentation
 
 ## Background Info on Matrix
 
-Matrix, the chat protocol, consists of "events". Events represent data inside a chat, which Matrix calls a "room". Events are split into two types: room events and state events.
+The Matrix chat protocol consists of `events`. Events represent data inside a chat, which Matrix calls a `room`. Events are split into two types: room events and state events.
 
-In Beeper, the list of chat messages is called a "timeline". Room events represent events inside of that timeline, that happen one after another. For example, messages being sent, messages being deleted, or reactions being applied. State events represent the current state of a room, for example, the title and the list of participants. State events have a singular current value.
+In Beeper, the list of chat messages is called a `timeline`. Room events represent events inside of that timeline that happen one after another. For example, messages being sent, messages being deleted, or reactions being applied. State events represent the current state of a room, for example, the title and the list of participants. State events have a single current value.
 
-Room account data is JSON data stored inside of each Beeper account, inaccessible by other users. Inside of room account data, Beeper stores the indicator of which message has been last read, and whether the chat has been marked "done", and whether it has been marked "unread".
+Room account data is JSON data stored inside of each Beeper account, inaccessible by other users. Inside of room account data, Beeper stores the indicator of which message has been last read, and whether the chat has been marked done, and whether it has been marked unread.
 
 ## Widget API Info
 
@@ -217,9 +217,9 @@ eventType (string): the "m.type" key in the JSON representing the event you want
 
 - messages: "m.room.message"
 - reaction: "m.reaction"
-- roomIds: array of ids of other rooms to get events in. Symbols.AnyRoom is "*"
+- roomIds: array of ids of other rooms to get events in. Symbols.AnyRoom is "*". Not needed if you only want events from the room currently open
 
-Request permissions for the "eventType", like so:
+You'll need to request permissions for the corresponding "eventType", like so:
 ```javascript
 WidgetEventCapability.forRoomEvent(
     EventDirection.Receive,
@@ -280,7 +280,7 @@ m.reaction:
 },
 ```
 
-`since` (string) is an optional parameter to fetch only messages after a certain message. Pass in the message's eventId as a string. For example, to get only unread messages, get `m.fully_read` from room account data, then set that as the `since` parameter.
+`since` (string) is an optional parameter used when fetching `m.room.message` events. It fetches only messages sent after a certain message, which you specify. Pass in the message's eventId as a string. For example, to get only unread messages, get `m.fully_read` from room account data, then set that as the `since` parameter.
 
 ### Sending
 
@@ -297,7 +297,7 @@ await widgetApi.sendRoomEvent(eventType: string, content: {
 });
 ```
 
-`content` varies depending on the eventType. For example:
+The `content` parameter varies depending on the eventType. For example:
 
 ```javascript
 await widgetApi.sendRoomEvent('m.room.message', {
@@ -313,14 +313,6 @@ await widgetApi.sendRoomEvent('m.room.redaction', {
 ```
 
 To send an event in another room, specify the roomId in `roomIds[]`. Not needed if you want to send an event in the currently-viewed room.
-
-[//]: # (TODO: elaborate)
-content: content specific to your command. For example, if `eventType` = `"m.room.redaction"`:
-```javascript
-{
-    redacts: eventId // eventId is string
-}
-```
 
 As usual, you'll need to request permissions:
 ```javascript
@@ -345,9 +337,10 @@ eventType (string): the "m.type" key of the JSON representing the state event yo
 - room members: "m.room.member"
 - room name: "m.room.name"
 
+[//]: # (TODO: is this accurate? tulir mentioned state key being the username)
 stateKey: to get the value of something (for example, the room name) at a certain point in time, provide the stateKey (as a string) corresponding to the state event. For example, if someone changed the room name but you'd like the previous one, provide the previous state key.
 
-roomIds: an array of other rooms to get state events from. Don't need to specify roomIds if you're just looking for the current room. Symbols.AnyRoom (to get the state event from all of the user's rooms) is "*".
+roomIds: an array of other rooms to get state events from. Not needed for getting data from the current room. Use Symbols.AnyRoom (which is "*") to get the state event from all of the user's rooms.
 
 ### Sending
 
@@ -389,6 +382,31 @@ WidgetEventCapability.forRoomAccountData(
 )
 ```
 
+## Permissions for other rooms
+
+To request permissions for data in all rooms, use `org.matrix.msc2762.timeline:*` as a capability request. 
+
+For example:
+
+```javascript
+<MuiCapabilitiesGuard
+    capabilities={[
+        WidgetEventCapability.forStateEvent(
+            EventDirection.Receive,
+            'm.room.name'
+        ),
+        WidgetEventCapability.forRoomEvent(
+            EventDirection.Receive,
+            'm.room.message'
+        ),
+        'org.matrix.msc2762.timeline:*',
+    ]}
+>
+```
+
+The user will be asked whether they want to grant the widget access to all rooms, if you specify this parameter. 
+
+**Most widgets won't need this capability.** People can open normal widgets within every room. This should only be used if you want to use data from multiple rooms at once in your widget.
 # Credits
 
 Thanks to [Nordeck](https://github.com/nordeck) for their wonderful library [matrix-widget-toolkit](https://github.com/nordeck/matrix-widget-toolkit). Beeper widgets are built on their library, plus some additional modifications for extra functionality.
