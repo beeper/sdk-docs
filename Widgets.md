@@ -1,29 +1,29 @@
 # Beeper Widgets
 
-Beeper Widgets are webpages that live in the sidebar of Beeper. They can access data from a chat in Beeper, such as messages and a list of users. They can also take actions, such as sending messages on the user's behalf.
+Beeper Widgets are webpages that live in the sidebar of Beeper Desktop. They can access data from a chat in Beeper, such as messages and a list of users. They can also take actions, such as sending messages on the user's behalf.
 
-## Inspiration + Examples
+Since Beeper is built on top of the Matrix protocol, and Beeper Desktop is a (distant) fork of Element, we were able to use the [Matrix widget api](https://github.com/beeper/matrix-widget-api) and Nordeck's [Matrix Widget Toolkit](https://github.com/beeper/matrix-widget-api) as the foundation for Beeper Widgets. We've added a few improvements and created several widgets.
+
+Widgets currently are only supported in Beeper Desktop.
+
+## Currently available widgets
 
 Example Widget: showcases what you can do with widgets.
-- Demo: https://example.beeper.vercel.app
+- Link: https://example.beeper.vercel.app
 - Code: https://github.com/beeper/widget-example
+- Created by: Beeper
 
-Summarizer: summarizes unread messages when you open a chat.
-- Demo: https://summarizer.beeper.vercel.app
+Summarizer: summarizes all unread messages in chat using [Anthropic Claude](https://docs.anthropic.com/claude/reference/getting-started-with-the-api) AI.
+- Link: https://summarizer.beeper.vercel.app
 - Code: https://github.com/beeper/widget-summarizer
+- Created by: Beeper
 
-Do It: it's like a button you can press that guesses what you need (information, guidance, etc) and gives it to you.
-- Demo: https://do-it.beeper.vercel.app
+Do It: it's like a button you can press that guesses what you need (information, guidance, etc) and gives it to you. Uses Anthropic Claude AI.
+- Link: https://do-it.beeper.vercel.app
 - Code: https://github.com/beeper/widget-do-it
+- Created by: Beeper
 
-So far, these are the widgets we've built. Here are some other things we think you could build with widgets:
-- Canned messages, if you need to say the same thing over and over
-- Personal scratchpad
-- Info about everyone in the chat, using a data source like PeopleDataLabs
-  - Or Twitter/Instagram feed of everyone in a chat
-- Connecting your calendar or to-do list
-
-If you've made something and want to add it to the examples, just open a pull request to this repo!
+## What can Beeper Widgets do?
 
 | Widget Capabilities                           |
 |-----------------------------------------------|
@@ -34,27 +34,39 @@ If you've made something and want to add it to the examples, just open a pull re
 | See which message was last-read by the user   |
 | Change the name of a chat (Matrix chats only) |
 
+### Permissions
+Widgets must request permission to take action in your chats. Each capability is requested separately, so users know up-front which capabilities they are granting to each widget. For example, you can create a widget that only has read access to a chat (eg Summarizer), or only send access (eg pre-canned message sender).  
 
+### With the Beeper Widget API, you can build widgets that could do things like:
+- Send pre-canned messages
+- Keep track of notes per contact
+- Show info about everyone in the chat, using a data source like Clearbit
+- Show the Twitter/Instagram feed of everyone in a chat
+- Display your calendar,
+- Add things from chat to your to-do list
+
+Built a cool widget for Beeper? Create a pull request to add your widget to this readme!
 
 ## Install a Beeper Widget
 
-1. Click the settings gear at the top-left of Beeper's desktop app, then press "Settings"
+1. Click the settings gear at the top-left of Beeper Desktop, then press "Settings"
 <img alt="settings.png" src="./media/settings.png" width="500"/>
 2. In the sidebar, click "Preferences" and disable "chat caching". Then click "Labs" and enable "Show widgets in chat view"
 <img alt="enable-widgets.gif" src="./media/enable-widgets.gif" width="500"/>
 3. In one of your chats, click "i" on the top-right, then press "Add widget". Enter the URL of the widget and give it a name.
-   1. If you'd just like to try out a widget, type in `https://example.beeper.vercel.app` for the demo widget. Otherwise, type in the URL of the widget you're trying to install.
+
+- If you'd just like to try out a widget, type in `https://example.beeper.vercel.app` for the demo widget. Otherwise, type in the URL of the widget you're trying to install.
 <img alt="add-widget.gif" src="./media/add-widget.gif" width="500"/>
-4. That's all! Click "x" in the top-right of the pop-up and your widget will be shown in the sidebar:
+4. That's all! Click your widget in the sidebar to open it:
 <img alt="widget-sidebar.png" src="./media/widget-sidebar.png" width="500"/>
 
 
 [//]: # (TODO: make this better. widgets are unique and mostly unprecedented in major chat networks; now people can have them in any)
 [//]: # (TODO: maybe have a section specifically on installing widgets? and then in "get started" i link how to install? so people can show their friends? or maybe not since the focus is on the developer)
 
-## Get started in 5 minutes
+## Build your own widget in 5 minutes
 
-We'll set you up with a [NextJS](https://nextjs.org/) project you can use to build your own widgets.
+Follow these instructions to create a boilerplate example widget using [NextJS](https://nextjs.org/) that you can then customize.
 
 1. Install dependencies
    1. If you haven't already, install the latest LTS or Current version of Node.js. 
@@ -66,9 +78,9 @@ We'll set you up with a [NextJS](https://nextjs.org/) project you can use to bui
    1. You'll be prompted "Ok to proceed? (y)". Type "y" then press enter
    2. It'll ask for your project name. Choose any name you want. This will be the name of the folder it creates on your computer.
    3. Wait for the packages to install. Then, in your terminal, `cd` into the folder you just created, then type `yarn dev`.
-3. Search for your "Note to self" room and open it up so that you can test out your Beeper Widgets without bothering others. You can also make your own Matrix room by clicking "Start New Chat" -> "Create group chat" -> "Beeper (Matrix)".
-4. Follow the instructions in [Install a Beeper Widget](#install-a-beeper-widget), but type `http://localhost:3000` as the URL.
-5. Wait a couple of seconds for NextJS to compile the page. You'll then see the example widget! Click through it to explore some of the functionality, and open it in your code editor to build your own widget.
+3. In Beeper Desktop, search for your "Note to self" chat and open it up so that you can test out your widget. Alternatively, you can also make your own Matrix chat by clicking "Start New Chat" -> "Create group chat" -> "Beeper (Matrix)" and name it something like 'Widget test'.
+4. Follow the instructions in [Install a Beeper Widget](#install-a-beeper-widget), and type `http://localhost:3000` as the URL.
+5. Wait a couple of seconds for NextJS to compile the page. You'll then see the example widget! Click through it to explore some of the functionality, and open it in your code editor to customize and create your own widget.
 
 ### Notes for development
 
@@ -78,13 +90,13 @@ We'll set you up with a [NextJS](https://nextjs.org/) project you can use to bui
   - You must use React, but you don't need to use NextJS. If there's another framework you prefer, use the code inside of the example project as a reference.
 - `app/page.tsx` is rendered when you open your widget.
 - In order to access data inside of a chat, you'll need to add code inside your widget to request permissions. In `page.tsx`, there's an example of that; just modify the `capabilities` array to suit your needs.
-- We recommend [Vercel](https://vercel.com/) for deploying your widget so others can use it. Push your code to a GitHub repo, link it to Vercel, and they'll generate a URL you can share.
+- We recommend [Vercel](https://vercel.com/) for deploying your widget so others can use it. Push your code to a GitHub repo, create an app in Vercel, and add the widget in Beeper Desktop using the Vercel URL.
 
 # API Documentation
 
 ## Background Info on Matrix
 
-The Matrix chat protocol consists of `events`. Events represent data inside a chat, such as a message, reaction, or list of participants. Each chat  in Matrix is called a `room`. Events are split into two types: room events and state events.
+The Matrix chat protocol consists of `events`. Events represent data inside a chat, such as a message, reaction, or list of participants. Each chat in Matrix is called a `room`. Events are split into two types: room events and state events.
 
 In Beeper, the list of chat messages in a room is called a `timeline`. Room events represent events inside of that timeline that happen one after another. For example, messages being sent, messages being deleted, or reactions being applied. State events represent the current state of a room, for example, the title and the list of participants. State events have a single current value.
 
@@ -393,4 +405,4 @@ The user will be asked whether they want to grant the widget access to all rooms
 
 # Credits
 
-Thanks to [Nordeck](https://github.com/nordeck) for their wonderful library [matrix-widget-toolkit](https://github.com/nordeck/matrix-widget-toolkit). Beeper Widgets are built on their library, plus some additional modifications for extra functionality.
+Thanks to [Nordeck](https://github.com/nordeck) for their wonderful library [matrix-widget-toolkit](https://github.com/nordeck/matrix-widget-toolkit) and Matrix for [matrix-widget-api](https://github.com/matrix-org/matrix-widget-api). Beeper Widgets are built on these libraries, plus some additional modifications for extra functionality.
