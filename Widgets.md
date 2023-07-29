@@ -57,9 +57,6 @@ Built a cool widget for Beeper? Create a pull request to add your widget to this
 
 https://github.com/beeper/sdk-docs/assets/61036090/a95cd2a1-67e4-4723-8fee-f72149df97f4
 
-[//]: # (TODO: make this better. widgets are unique and mostly unprecedented in major chat networks; now people can have them in any)
-[//]: # (TODO: maybe have a section specifically on installing widgets? and then in "get started" i link how to install? so people can show their friends? or maybe not since the focus is on the developer)
-
 ## Build your own widget in 5 minutes
 
 Follow these instructions to create a boilerplate example widget using [NextJS](https://nextjs.org/) that you can then customize.
@@ -328,7 +325,6 @@ eventType (string): the "m.type" key of the JSON representing the state event yo
 - room members: "m.room.member"
 - room name: "m.room.name"
 
-[//]: # (TODO: is this accurate? tulir mentioned state key being the username)
 stateKey: to get the value of something (for example, the room name) at a certain point in time, provide the stateKey (as a string) corresponding to the state event. For example, if someone changed the room name but you'd like the previous one, provide the previous state key.
 
 roomIds: an array of other rooms to get state events from. Not needed for getting data from the current room. Use Symbols.AnyRoom (which is "*") to get the state event from all of the user's rooms.
