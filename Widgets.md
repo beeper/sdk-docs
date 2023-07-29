@@ -50,16 +50,12 @@ Built a cool widget for Beeper? Create a pull request to add your widget to this
 ## Install a Beeper Widget
 
 1. Click the settings gear at the top-left of Beeper Desktop, then press "Settings"
-<img alt="settings.png" src="./media/settings.png" width="500"/>
 2. In the sidebar, click "Preferences" and disable "chat caching". Then click "Labs" and enable "Show widgets in chat view"
-<img alt="enable-widgets.gif" src="./media/enable-widgets.gif" width="500"/>
 3. In one of your chats, click "i" on the top-right, then press "Add widget". Enter the URL of the widget and give it a name.
-
 - If you'd just like to try out a widget, type in `https://example.beeper.vercel.app` for the demo widget. Otherwise, type in the URL of the widget you're trying to install.
-<img alt="add-widget.gif" src="./media/add-widget.gif" width="500"/>
-4. That's all! Click your widget in the sidebar to open it:
-<img alt="widget-sidebar.png" src="./media/widget-sidebar.png" width="500"/>
+4. That's all! Click your widget in the sidebar to open it.
 
+https://github.com/beeper/sdk-docs/assets/61036090/a95cd2a1-67e4-4723-8fee-f72149df97f4
 
 [//]: # (TODO: make this better. widgets are unique and mostly unprecedented in major chat networks; now people can have them in any)
 [//]: # (TODO: maybe have a section specifically on installing widgets? and then in "get started" i link how to install? so people can show their friends? or maybe not since the focus is on the developer)
