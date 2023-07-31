@@ -20,7 +20,7 @@ Summarizer: summarizes all unread messages in chat using [Anthropic Claude](http
 - Code: https://github.com/beeper/widget-summarizer
 - Created by: Beeper
 
-Do It: it's like a button you can press that guesses what you need (information, guidance, etc) and gives it to you. Uses Anthropic Claude AI.
+Do It: it's like a button you can press that guesses what you need (information, guidance, etc) and gives it to you. Uses the OpenAI API.
 - Link: https://do-it.beeper.vercel.app
 - Code: https://github.com/beeper/widget-do-it
 - Created by: Beeper
