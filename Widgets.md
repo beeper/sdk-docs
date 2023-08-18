@@ -44,7 +44,7 @@ Widgets must request permission to take action in your chats. Each capability is
 - Keep track of notes per contact
 - Show info about everyone in the chat, using a data source like Clearbit
 - Show the Twitter/Instagram feed of everyone in a chat
-- Display your calendar,
+- Display your calendar
 - Add things from chat to your to-do list
 
 Built a cool widget for Beeper? Create a pull request to add your widget to this readme!
