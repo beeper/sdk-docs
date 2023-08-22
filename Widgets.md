@@ -57,7 +57,7 @@ Built a cool widget for Beeper? Create a pull request to add your widget to this
 - If you'd just like to try out a widget, type in `https://example.beeper.vercel.app` for the demo widget. Otherwise, type in the URL of the widget you're trying to install.
 4. That's all! Click your widget in the sidebar to open it.
 
-https://github.com/beeper/sdk-docs/assets/61036090/a95cd2a1-67e4-4723-8fee-f72149df97f4
+https://github.com/beeper/sdk-docs/assets/61036090/e6eb4f78-1931-45a0-9b5e-f5685a2aaccf
 
 ## Build your own widget in 5 minutes
 
