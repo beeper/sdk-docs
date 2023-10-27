@@ -10,20 +10,13 @@ Widgets currently are only supported in Beeper Desktop.
 
 ## Currently available widgets
 
-Example Widget: showcases what you can do with widgets.
-- Link: https://example.beeper.vercel.app
-- Code: https://github.com/beeper/widget-example
-- Created by: Beeper
+To add your own widgets to this list, please send a Pull Request to modify this table.
 
-Summarizer: summarizes all unread messages in chat using [Anthropic Claude](https://docs.anthropic.com/claude/reference/getting-started-with-the-api) AI.
-- Link: https://summarizer.beeper.vercel.app
-- Code: https://github.com/beeper/widget-summarizer
-- Created by: Beeper
-
-Do It: it's like a button you can press that guesses what you need (information, guidance, etc) and gives it to you. Uses the OpenAI API.
-- Link: https://do-it.beeper.vercel.app
-- Code: https://github.com/beeper/widget-do-it
-- Created by: Beeper
+| Name | Description | Created By | Link | Code |
+| ---- | ----------- | ---------- | ---- | ---- |
+| Example Widget | Showcases what you can do with widgets. | Beeper | https://example.beeper.vercel.app | https://github.com/beeper/widget-example |
+| Summarizer | Summarizes all unread messages in chat using [Anthropic Claude](https://docs.anthropic.com/claude/reference/getting-started-with-the-api) AI. | Beeper | https://summarizer.beeper.vercel.app | https://github.com/beeper/widget-summarizer |
+| Do It | It's like a button you can press that guesses what you need (information, guidance, etc) and gives it to you. Uses the OpenAI API. | Beeper | https://do-it.beeper.vercel.app | https://github.com/beeper/widget-do-it |
 
 ## What can Beeper Widgets do?
 
