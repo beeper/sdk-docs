@@ -4,7 +4,7 @@ Beeper Widgets are webpages that live in the sidebar of Beeper Desktop. They can
 
 ![summarizer.png](media%2Fsummarizer.png)
 
-Since Beeper is built on top of the Matrix protocol, and Beeper Desktop is a (distant) fork of Element, we were able to use the [Matrix widget api](https://github.com/beeper/matrix-widget-api) and Nordeck's [Matrix Widget Toolkit](https://github.com/beeper/matrix-widget-api) as the foundation for Beeper Widgets. We've added a few improvements and created several widgets. One major difference is that in Beeper widgets are available globally alongside each of your chats, and are not shared with everyone in the chat.
+Since Beeper is built on top of the Matrix protocol, and Beeper Desktop is a (distant) fork of Element, we were able to use the [Matrix widget api](https://github.com/beeper/matrix-widget-api) and Nordeck's [Matrix Widget Toolkit](https://github.com/beeper/matrix-widget-toolkit) as the foundation for Beeper Widgets. We've added a few improvements and created several widgets. One major difference is that in Beeper widgets are available globally alongside each of your chats, and are not shared with everyone in the chat.
 
 Widgets currently are only supported in Beeper Desktop.
 
