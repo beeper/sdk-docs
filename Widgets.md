@@ -10,7 +10,7 @@ Widgets currently are only supported in Beeper Desktop.
 
 ## Currently available widgets
 
-To add your own widgets to this list, please send a Pull Request to modify this table.
+Built a cool widget for Beeper? Create a pull request to add your widget to this readme!
 
 | Name | Description | Created By | Link | Code |
 | ---- | ----------- | ---------- | ---- | ---- |
@@ -39,8 +39,6 @@ Widgets must request permission to take action in your chats. Each capability is
 - Show the Twitter/Instagram feed of everyone in a chat
 - Display your calendar
 - Add things from chat to your to-do list
-
-Built a cool widget for Beeper? Create a pull request to add your widget to this readme!
 
 ## Install a Beeper Widget
 
